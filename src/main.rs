@@ -9,6 +9,7 @@ fn main() {
         velocity: Vector::new(2, 1),
     };
     for _ in 0..5 {
+        plane.accelerate(0, 1);
         plane.tick();
         println!("{:?}", plane);
     }
