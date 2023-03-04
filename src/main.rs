@@ -1,5 +1,7 @@
+mod atc;
 mod simulate;
 
+use crate::atc::planning::compute_landing_plan;
 use crate::simulate::airport::Airport;
 use crate::simulate::plane::Plane;
 use lyon_geom::{Point, Vector};
@@ -12,8 +14,9 @@ fn main() {
         position: Point::new(-5, 0),
         velocity: Vector::new(2, 1),
     };
-    for _ in 0..5 {
-        plane.accelerate(0, 1);
+    let plan = compute_landing_plan(&plane, &airport);
+    for step in plan {
+        plane.accelerate(step.x, step.y);
         plane.tick();
         println!("{:?}", plane);
         println!(

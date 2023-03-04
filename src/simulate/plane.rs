@@ -1,6 +1,6 @@
 use lyon_geom::{Point, Vector};
 
-#[derive(Debug)]
+#[derive(Debug, Hash, PartialEq, Eq)]
 pub struct Plane {
     pub position: Point<i32>,
     pub velocity: Vector<i32>,
