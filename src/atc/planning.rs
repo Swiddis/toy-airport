@@ -1,4 +1,3 @@
-use lyon_geom::Vector;
 use pathfinding::directed::astar::astar;
 
 use crate::simulate::airport::Airport;
@@ -7,7 +6,7 @@ use crate::simulate::plane::Plane;
 pub fn compute_landing_plan(plane: &Plane, airport: &Airport) -> Option<(Vec<Plane>, i32)> {
     let goal = Plane {
         position: airport.position,
-        velocity: Vector::new(0, 0),
+        velocity: airport.runway_direction * 3,
     };
     astar(
         plane,

@@ -9,20 +9,18 @@ use lyon_geom::{Point, Vector};
 fn main() {
     let airport = Airport {
         position: Point::new(0, 0),
+        runway_direction: Vector::new(0, 1),
     };
     let plane = Plane {
-        position: Point::new(-5, 0),
-        velocity: Vector::new(0, 5),
+        position: Point::new(-20, 10),
+        velocity: Vector::new(3, 3),
     };
     let plan = compute_landing_plan(&plane, &airport).unwrap();
-    for step in plan.0 {
-        println!("{:?}", step);
-        println!(
-            "Distance: {}",
-            step
-                .position
-                .to_f64()
-                .distance_to(airport.position.to_f64())
-        );
-    }
+    println!(
+        "Positions: {:?}",
+        plan.0
+            .iter()
+            .map(|p| (p.position.x, p.position.y))
+            .collect::<Vec<(i32, i32)>>()
+    )
 }
