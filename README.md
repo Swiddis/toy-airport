@@ -2,13 +2,9 @@
 
 Toy Airport is a minimal airplane simulator written in Rust.
 The initial version is still in progress, current work is just back-end calculation.
+Here's one of the landing paths drawn in [Desmos](https://www.desmos.com/):
 
-Todos:
-
-- Add a graphical front-end
-- Procedural plane generation
-- Support more complicated airport logic
-- More efficient routing
+![A simulated landing flight path drawn in Desmos](media/readme/flight-path-desmos.png)
 
 ## Installation
 
@@ -24,6 +20,13 @@ cargo run --release
 
 Currently the project computes and outputs a landing path.
 You can tweak the settings in `main.rs`.
+
+## Todo
+
+- Add a graphical front-end
+- Procedural plane generation
+- Support more complicated airport logic
+- More efficient routing
 
 ## Contributing
 

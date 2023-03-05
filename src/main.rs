@@ -8,16 +8,17 @@ use lyon_geom::{Point, Vector};
 
 fn main() {
     let airport = Airport {
-        position: Point::new(100, 0),
-        runway_direction: Vector::new(2, -1),
+        position: Point::new(10, 0),
+        runway_direction: Vector::new(1, -1),
     };
     let plane = Plane {
-        position: Point::new(-100, 0),
-        velocity: Vector::new(0, 10),
+        position: Point::new(-10, 0),
+        velocity: Vector::new(10, 0),
     };
     let plan = compute_landing_plan(&plane, &airport).unwrap();
+    println!("Landed in {} steps", plan.0.len());
     println!(
-        "Positions: {:?}",
+        "Steps: {:?}",
         plan.0
             .iter()
             .map(|p| (p.position.x, p.position.y))
