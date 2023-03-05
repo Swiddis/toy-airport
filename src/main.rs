@@ -10,18 +10,16 @@ fn main() {
     let airport = Airport {
         position: Point::new(0, 0),
     };
-    let mut plane = Plane {
+    let plane = Plane {
         position: Point::new(-5, 0),
-        velocity: Vector::new(2, 1),
+        velocity: Vector::new(0, 5),
     };
-    let plan = compute_landing_plan(&plane, &airport);
-    for step in plan {
-        plane.accelerate(step.x, step.y);
-        plane.tick();
-        println!("{:?}", plane);
+    let plan = compute_landing_plan(&plane, &airport).unwrap();
+    for step in plan.0 {
+        println!("{:?}", step);
         println!(
             "Distance: {}",
-            plane
+            step
                 .position
                 .to_f64()
                 .distance_to(airport.position.to_f64())
