@@ -2,6 +2,7 @@
 
 Toy Airport is a minimal airplane simulator written in Rust.
 The initial version is still in progress, current work is just back-end calculation.
+The movement for the plane was inspired by the rules of the game [Racetrack](https://en.wikipedia.org/wiki/Racetrack_(game)).
 Here's one of the landing paths drawn in [Desmos](https://www.desmos.com/):
 
 ![A simulated landing flight path drawn in Desmos](media/readme/flight-path-desmos.png)
