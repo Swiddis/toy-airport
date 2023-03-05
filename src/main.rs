@@ -8,12 +8,12 @@ use lyon_geom::{Point, Vector};
 
 fn main() {
     let airport = Airport {
-        position: Point::new(0, 0),
-        runway_direction: Vector::new(0, 1),
+        position: Point::new(100, 0),
+        runway_direction: Vector::new(2, -1),
     };
     let plane = Plane {
-        position: Point::new(-20, 10),
-        velocity: Vector::new(3, 3),
+        position: Point::new(-100, 0),
+        velocity: Vector::new(0, 10),
     };
     let plan = compute_landing_plan(&plane, &airport).unwrap();
     println!(

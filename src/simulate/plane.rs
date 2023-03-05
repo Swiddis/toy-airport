@@ -10,7 +10,7 @@ const MAX_FLIGHT_SPEED: f64 = 10.0; // TODO make dynamic
 const MIN_FLIGHT_SPEED: f64 = 2.5;
 
 impl Plane {
-    pub fn astar_successors(&self) -> Vec<(Plane, i32)> {
+    pub fn astar_successors(&self) -> Vec<(Plane, f64)> {
         let accelerations: Vec<(i32, i32)> = (-1..2)
             .into_iter()
             .map(|x| (-1..2).into_iter().map(move |y| (x, y)))
@@ -29,7 +29,7 @@ impl Plane {
                             position: pos,
                             velocity: vel,
                         },
-                        1,
+                        1.0,
                     )),
                 }
             })
