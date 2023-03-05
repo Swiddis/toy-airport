@@ -10,7 +10,9 @@ pub fn compute_landing_plan(
 ) -> Option<(Vec<Plane>, OrderedFloat<f64>)> {
     let goal = Plane {
         position: airport.position,
-        velocity: (airport.runway_direction.to_f64().normalize() * 3.0).round().to_i32(),
+        velocity: (airport.runway_direction.to_f64().normalize() * 3.0)
+            .round()
+            .to_i32(),
     };
     astar(
         plane,
