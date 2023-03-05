@@ -26,10 +26,11 @@ You can tweak the settings in `main.rs`.
 
 ## Todo
 
-- Add a graphical front-end
+- More efficient routing
+- Animation
+- Better graphics overall
 - Procedural plane generation
 - Support more complicated airport logic
-- More efficient routing
 
 ## Contributing
 
