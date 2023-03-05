@@ -7,5 +7,6 @@ edition = "2021"
 
 [dependencies]
 lyon_geom = "1.0.4"
+nannou = "0.18.1"
 ordered-float = "3.4.0"
 pathfinding = "4.2.1"
