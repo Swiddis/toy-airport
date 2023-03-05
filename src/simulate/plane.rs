@@ -1,6 +1,6 @@
 use lyon_geom::{Point, Vector};
 
-#[derive(Clone, Debug, Hash, PartialEq, Eq)]
+#[derive(Clone, Debug, Eq, Hash, PartialEq)]
 pub struct Plane {
     pub position: Point<i32>,
     pub velocity: Vector<i32>,
@@ -10,7 +10,7 @@ const MAX_FLIGHT_SPEED: f64 = 10.0; // TODO make dynamic
 const MIN_FLIGHT_SPEED: f64 = 2.5;
 
 impl Plane {
-    pub fn astar_successors(&self) -> Vec<(Plane, f64)> {
+    pub fn astar_successors(&self) -> Vec<(Self, f64)> {
         let accelerations: Vec<(i32, i32)> =
             (-1..2).flat_map(|x| (-1..2).map(move |y| (x, y))).collect();
         accelerations
@@ -22,7 +22,7 @@ impl Plane {
                     v if v < MIN_FLIGHT_SPEED => None,
                     v if v > MAX_FLIGHT_SPEED => None,
                     _ => Some((
-                        Plane {
+                        Self {
                             position: pos,
                             velocity: vel,
                         },
