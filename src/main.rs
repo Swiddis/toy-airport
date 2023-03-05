@@ -1,12 +1,14 @@
 mod atc;
 mod simulate;
 
+use std::collections::HashMap;
+
 use crate::atc::planning::compute_landing_plan;
 use crate::simulate::airport::Airport;
 use crate::simulate::plane::Plane;
 use lyon_geom::{Point, Vector};
-use nannou::geom::{path::Builder, Path};
 use nannou::prelude::*;
+use nannou::geom::*;
 
 const SCALE: f32 = 10.0;
 
@@ -25,20 +27,45 @@ fn model(_app: &App) -> Model {
 }
 
 impl Model {
+    fn average_velocities(&self) -> Option<HashMap<&Plane, Vector<f32>>> {
+        if self.steps.len() < 2 {
+            return None;
+        }
+        let mut map = HashMap::new();
+        map.insert(&self.steps[0], self.steps[1].velocity.to_f32());
+        map.insert(
+            self.steps.last().unwrap(),
+            self.steps.last().unwrap().velocity.to_f32(),
+        );
+        for (i, plane) in self.steps.iter().enumerate().skip(1) {
+            if i == self.steps.len() - 1 {
+                continue;
+            }
+            let (prev, next) = (&self.steps[i - 1], &self.steps[i + 1]);
+            let (v1, v2) = (
+                plane.position - prev.position,
+                next.position - plane.position,
+            );
+            map.insert(plane, (v1.to_f32() + v2.to_f32()) * 0.5);
+        }
+        Some(map)
+    }
+
     fn as_smooth_path(&self) -> Path {
-        let builder = Builder::new();
         let start = self.steps[0].position.to_f32() * SCALE;
-        let mut builder = builder.begin(pt2(start.x, start.y));
+        let avg_vel = self.average_velocities().unwrap();
+        let mut path = path().begin(vec2(start.x, start.y));
         for (p1, p2) in self.steps.iter().zip(self.steps.iter().skip(1)) {
             let (c1, c2, to) = (
-                p1.position.to_f32() * SCALE + p1.velocity.to_f32() * SCALE / 3.0,
-                p2.position.to_f32() * SCALE - p2.velocity.to_f32() * SCALE / 3.0,
+                p1.position.to_f32() * SCALE + avg_vel[p1] * SCALE / 3.0,
+                p2.position.to_f32() * SCALE - avg_vel[p2] * SCALE / 3.0,
                 p2.position.to_f32() * SCALE,
             );
             let (c1, c2, to) = (pt2(c1.x, c1.y), pt2(c2.x, c2.y), pt2(to.x, to.y));
-            builder = builder.cubic_bezier_to(c1, c2, to);
+            path = path.cubic_bezier_to(c1, c2, to);
         }
-        builder.build()
+        path.inner_mut().end(false);
+        path.build()
     }
 }
 
