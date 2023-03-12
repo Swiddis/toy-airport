@@ -13,6 +13,7 @@ use nannou::prelude::*;
 const SCALE: f32 = 10.0;
 
 struct Model {
+    airport: Airport,
     steps: Vec<Plane>,
 }
 
@@ -21,8 +22,17 @@ fn main() {
 }
 
 fn model(_app: &App) -> Model {
+    let airport = Airport {
+        position: Point::new(10, 0),
+        runway_direction: Vector::new(1, -1),
+    };
+    let plane = Plane {
+        position: Point::new(-10, 0),
+        velocity: Vector::new(10, 0),
+    };
     Model {
-        steps: generate_plane_steps(),
+        airport: airport.clone(),
+        steps: generate_plane_steps(&airport, &plane),
     }
 }
 
@@ -64,6 +74,10 @@ impl Model {
             let (c1, c2, to) = (pt2(c1.x, c1.y), pt2(c2.x, c2.y), pt2(to.x, to.y));
             path = path.cubic_bezier_to(c1, c2, to);
         }
+        // One more straight line for landing
+        let end = self.steps.last().unwrap();
+        let end_pos = (end.position + end.velocity).to_f32() * SCALE;
+        path = path.line_to(pt2(end_pos.x, end_pos.y));
         path.inner_mut().end(false);
         path.build()
     }
@@ -73,6 +87,15 @@ fn event(_app: &App, _model: &mut Model, _event: Event) {}
 
 fn view(app: &App, model: &Model, frame: Frame) {
     let draw = app.draw();
+    let dir = model.airport.runway_direction.to_f32();
+    let pos = model.airport.position.to_f32() + dir.normalize() * 1.5;
+    // Runway
+    draw.rect()
+        .width(8.0)
+        .height(5.0 * SCALE)
+        .z_radians(-dir.angle_from_x_axis().radians)
+        .xy(vec2(pos.x, pos.y) * SCALE);
+    // Flight path
     let path = model.as_smooth_path();
     draw.path()
         .stroke()
@@ -82,15 +105,7 @@ fn view(app: &App, model: &Model, frame: Frame) {
     draw.to_frame(app, &frame).unwrap();
 }
 
-fn generate_plane_steps() -> Vec<Plane> {
-    let airport = Airport {
-        position: Point::new(10, 0),
-        runway_direction: Vector::new(1, -1),
-    };
-    let plane = Plane {
-        position: Point::new(-10, 0),
-        velocity: Vector::new(10, 0),
-    };
-    let plan = compute_landing_plan(&plane, &airport).unwrap();
+fn generate_plane_steps(airport: &Airport, plane: &Plane) -> Vec<Plane> {
+    let plan = compute_landing_plan(plane, airport).unwrap();
     plan.0
 }
