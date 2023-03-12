@@ -1,5 +1,4 @@
 use lyon_geom::{Point, Vector};
-use std::cmp::max;
 
 #[derive(Clone, Debug, Eq, Hash, PartialEq)]
 pub struct Plane {
