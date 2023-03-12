@@ -7,8 +7,8 @@ use crate::atc::planning::compute_landing_plan;
 use crate::simulate::airport::Airport;
 use crate::simulate::plane::Plane;
 use lyon_geom::{Point, Vector};
-use nannou::prelude::*;
 use nannou::geom::*;
+use nannou::prelude::*;
 
 const SCALE: f32 = 10.0;
 
