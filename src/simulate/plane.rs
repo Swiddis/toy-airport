@@ -68,8 +68,8 @@ impl Plane {
             goal.velocity.y,
         );
         // Current implementation of axis heuristics is an error from the source.
-        // For now, we use the error magnitude as the real heuristic.
-        let dist = ((h_x * h_x + h_y * h_y) as f64).sqrt();
-        dist.ceil() as usize
+        // Empirical testing shows sum performs well,
+        // it'll work until the axis computations are optimized
+        h_x + h_y
     }
 }
