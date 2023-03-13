@@ -13,13 +13,9 @@ fn single_axis_heuristic(curr_pos: i32, curr_vel: i32, goal_pos: i32, goal_vel: 
     // We assume a "suicide burn" strategy, from astronautics.
     // Assume we accelerate as hard as possible to the goal velocity, where do we land?
     let d_vel = goal_vel - curr_vel;
-    // Position change depends on triangle number for delta
-    let pos = curr_pos
-        + if d_vel < 0 {
-            (-d_vel - 2 * curr_vel + 1) * d_vel / 2
-        } else {
-            (d_vel + 2 * curr_vel + 1) * d_vel / 2
-        };
+    let (time, acc) = (d_vel.abs(), d_vel.signum());
+    // Kinematic equation
+    let pos = curr_pos + curr_vel * time + acc * time * time;
     // How far we are from the goal at the end of the change determines our error.
     let d_pos = (pos - goal_pos).abs();
     // For now, error is our heuristic
