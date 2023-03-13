@@ -6,6 +6,7 @@ use std::collections::HashMap;
 use crate::atc::planning::compute_landing_plan;
 use crate::simulate::airport::Airport;
 use crate::simulate::plane::Plane;
+use atc::planning::LANDING_SPEED;
 use lyon_geom::{Point, Vector};
 use nannou::geom::*;
 use nannou::prelude::*;
@@ -88,11 +89,11 @@ fn event(_app: &App, _model: &mut Model, _event: Event) {}
 fn view(app: &App, model: &Model, frame: Frame) {
     let draw = app.draw();
     let dir = model.airport.runway_direction.to_f32();
-    let pos = model.airport.position.to_f32() + dir.normalize() * 1.5;
+    let pos = model.airport.position.to_f32() + dir.normalize() * (LANDING_SPEED as f32) * 0.5;
     // Runway
     draw.rect()
         .width(8.0)
-        .height(5.0 * SCALE)
+        .height(2.0 * (LANDING_SPEED as f32) * SCALE)
         .z_radians(-dir.angle_from_x_axis().radians)
         .xy(vec2(pos.x, pos.y) * SCALE);
     // Flight path

@@ -3,10 +3,12 @@ use pathfinding::directed::astar::astar;
 use crate::simulate::airport::Airport;
 use crate::simulate::plane::Plane;
 
+pub const LANDING_SPEED: f64 = 3.0;
+
 pub fn compute_landing_plan(plane: &Plane, airport: &Airport) -> Option<(Vec<Plane>, usize)> {
     let goal = Plane {
         position: airport.position,
-        velocity: (airport.runway_direction.to_f64().normalize() * 3.0)
+        velocity: (airport.runway_direction.to_f64().normalize() * LANDING_SPEED)
             .round()
             .to_i32(),
     };
