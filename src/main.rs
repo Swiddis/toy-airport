@@ -4,9 +4,9 @@ mod simulate;
 use std::collections::HashMap;
 
 use crate::atc::planning::compute_landing_plan;
-use crate::simulate::airport::Airport;
+use crate::simulate::airport::{Airport, Runway};
 use crate::simulate::plane::Plane;
-use atc::planning::LANDING_SPEED;
+use crate::simulate::plane::LANDING_SPEED;
 use lyon_geom::{Point, Vector};
 use nannou::geom::*;
 use nannou::prelude::*;
@@ -24,12 +24,24 @@ fn main() {
 
 fn model(_app: &App) -> Model {
     let airport = Airport {
-        position: Point::new(10, 0),
-        runway_direction: Vector::new(1, -1),
+        runways: vec![
+            Runway {
+                position: Point::new(0, 0),
+                direction: Vector::new(1, 0),
+            },
+            Runway {
+                position: Point::new(-2, 0),
+                direction: Vector::new(1, -1),
+            },
+            Runway {
+                position: Point::new(2, 0),
+                direction: Vector::new(-1, 1),
+            },
+        ],
     };
     let plane = Plane {
-        position: Point::new(-10, 0),
-        velocity: Vector::new(10, 0),
+        position: Point::new(10, 20),
+        velocity: Vector::new(0, -10),
     };
     Model {
         airport: airport.clone(),
@@ -86,23 +98,29 @@ impl Model {
 
 fn event(_app: &App, _model: &mut Model, _event: Event) {}
 
-fn view(app: &App, model: &Model, frame: Frame) {
-    let draw = app.draw();
-    let dir = model.airport.runway_direction.to_f32();
-    let pos = model.airport.position.to_f32() + dir.normalize() * (LANDING_SPEED as f32) * 0.5;
-    // Runway
+fn draw_runway(draw: &Draw, runway: &Runway) {
+    let (dir, pos) = (runway.direction.to_f32(), runway.position.to_f32());
     draw.rect()
         .width(8.0)
-        .height(2.0 * (LANDING_SPEED as f32) * SCALE)
-        .z_radians(-dir.angle_from_x_axis().radians)
+        .height(2.5 * (LANDING_SPEED as f32) * SCALE)
+        .z_radians(-dir.angle_to(Vector::new(0.0, 1.0)).radians)
         .xy(vec2(pos.x, pos.y) * SCALE);
-    // Flight path
-    let path = model.as_smooth_path();
+}
+
+fn draw_flight_path(draw: &Draw, path: &Path) {
     draw.path()
         .stroke()
         .weight(4.0)
         .color(STEELBLUE)
         .events(path.iter());
+}
+
+fn view(app: &App, model: &Model, frame: Frame) {
+    let draw = app.draw();
+    for runway in model.airport.runways.iter() {
+        draw_runway(&draw, runway);
+    }
+    draw_flight_path(&draw, &model.as_smooth_path());
     draw.to_frame(app, &frame).unwrap();
 }
 

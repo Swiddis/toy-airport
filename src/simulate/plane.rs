@@ -1,5 +1,8 @@
 use lyon_geom::{Point, Vector};
 
+use super::airport::Airport;
+use super::airport::Runway;
+
 #[derive(Clone, Debug, Eq, Hash, PartialEq)]
 pub struct Plane {
     pub position: Point<i32>,
@@ -7,19 +10,14 @@ pub struct Plane {
 }
 
 const MAX_FLIGHT_SPEED: f64 = 10.0; // TODO make dynamic
-const MIN_FLIGHT_SPEED: f64 = 2.5;
+const MIN_FLIGHT_SPEED: f64 = 3.0;
+pub const LANDING_SPEED: f64 = 4.0;
 
-fn single_axis_heuristic(curr_pos: i32, curr_vel: i32, goal_pos: i32, goal_vel: i32) -> usize {
-    // We assume a "suicide burn" strategy, from astronautics.
-    // Assume we accelerate as hard as possible to the goal velocity, where do we land?
-    let d_vel = goal_vel - curr_vel;
-    let (time, acc) = (d_vel.abs(), d_vel.signum());
-    // Kinematic equation
-    let pos = curr_pos + curr_vel * time + acc * time * time;
-    // How far we are from the goal at the end of the change determines our error.
-    let d_pos = (pos - goal_pos).abs();
-    // For now, error is our heuristic
-    d_pos as usize
+fn runway_heuristic(plane: &Plane, runway: &Runway) -> usize {
+    let lv = runway.landing_vector(LANDING_SPEED);
+    let dp = (runway.position - plane.position).abs().to_usize();
+    let dv = (lv - plane.velocity).abs().to_usize();
+    dp.x + dp.y + dv.x + dv.y
 }
 
 impl Plane {
@@ -48,24 +46,11 @@ impl Plane {
 
     // Non-admissable, we don't actually need an optimal path.
     // We want to optimize for solution speed.
-    pub fn astar_heuristic(&self, goal: &Plane) -> usize {
-        // Each axis can be controlled independently,
-        // so we solve each axis and merge them.
-        let h_x = single_axis_heuristic(
-            self.position.x,
-            self.velocity.x,
-            goal.position.x,
-            goal.velocity.x,
-        );
-        let h_y = single_axis_heuristic(
-            self.position.y,
-            self.velocity.y,
-            goal.position.y,
-            goal.velocity.y,
-        );
-        // Current implementation of axis heuristics is an error from the source.
-        // Empirical testing shows sum performs well,
-        // it'll work until the axis computations are optimized
-        h_x + h_y
+    pub fn astar_heuristic(&self, goal: &Airport) -> usize {
+        goal.runways
+            .iter()
+            .map(|r| runway_heuristic(self, r))
+            .min()
+            .unwrap()
     }
 }

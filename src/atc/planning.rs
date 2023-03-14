@@ -2,16 +2,9 @@ use pathfinding::directed::astar::astar;
 
 use crate::simulate::airport::Airport;
 use crate::simulate::plane::Plane;
-
-pub const LANDING_SPEED: f64 = 3.0;
+use crate::simulate::plane::LANDING_SPEED;
 
 pub fn compute_landing_plan(plane: &Plane, airport: &Airport) -> Option<(Vec<Plane>, usize)> {
-    let goal = Plane {
-        position: airport.position,
-        velocity: (airport.runway_direction.to_f64().normalize() * LANDING_SPEED)
-            .round()
-            .to_i32(),
-    };
     astar(
         plane,
         |p| {
@@ -20,7 +13,12 @@ pub fn compute_landing_plan(plane: &Plane, airport: &Airport) -> Option<(Vec<Pla
                 .map(|(p, c)| (p, c))
                 .collect::<Vec<(Plane, usize)>>()
         },
-        |p| p.astar_heuristic(&goal),
-        |p| p.position == goal.position && p.velocity == goal.velocity,
+        |p| p.astar_heuristic(airport),
+        |p| {
+            airport
+                .runways
+                .iter()
+                .any(|r| p.position == r.position && p.velocity == r.landing_vector(LANDING_SPEED))
+        },
     )
 }
