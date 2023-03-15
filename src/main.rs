@@ -1,7 +1,6 @@
-mod atc;
-mod simulate;
+mod components;
 
-use crate::simulate::plane::Plane;
+use crate::components::plane::Plane;
 use rand::prelude::*;
 
 const _SCALE: f32 = 10.0;
