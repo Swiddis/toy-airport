@@ -1,6 +1,6 @@
 [package]
 name = "toy-airport"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["Simeon Widdis <sawiddis@gmail.com>"]
 edition = "2021"
 readme = "README.md"
@@ -9,7 +9,6 @@ license = "MIT"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+bevy = "0.10.0"
 lyon_geom = "1.0.4"
-nannou = "0.18.1"
-ordered-float = "3.4.0"
-pathfinding = "4.2.1"
+rand = "0.8.5"
