@@ -1,6 +1,7 @@
+use bevy::prelude::Component;
 use lyon_geom::{Point, Vector};
 
-#[derive(Debug)]
+#[derive(Component, Debug)]
 pub struct Plane {
     pub pos: Point<f32>,
     pub vel: Vector<f32>,
